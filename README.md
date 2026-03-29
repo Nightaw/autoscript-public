@@ -1,5 +1,7 @@
 # AutoScript Public
 
+[![CI](https://github.com/Nightaw/autoscript-public/actions/workflows/ci.yml/badge.svg)](https://github.com/Nightaw/autoscript-public/actions/workflows/ci.yml)
+
 一个面向 GitHub 展示的公开版仓库，用来呈现“移动端音视频自动化测试框架”的工程化思路，以及其中最适合公开演示的核心分析能力。
 
 ## 这是什么
@@ -9,7 +11,7 @@
 - 播放器输出状态卡顿识别
 - 多信号超时事件聚类
 - 分辨率变化时间线提取
-- 面向 worker 架构的项目组织方式
+- mock worker 服务与结构化报告输出
 
 仓库中的代码、样例和文档都围绕一个目标展开：让面试官能在很短时间内看懂这个项目解决什么问题、你做了哪些事情、你的实现思路是否靠谱。
 
@@ -96,21 +98,47 @@ python3 tools/parse_resolution_log.py samples/logs/demo_resolution.log
 python3 tools/run_demo_suite.py
 ```
 
+### 5. Mock Worker API Demo
+
+启动本地 worker：
+
+```bash
+python3 tools/run_worker_server.py
+```
+
+然后触发一次 mock job：
+
+```bash
+curl -X POST http://127.0.0.1:7777/demo/run \
+  -H "Content-Type: application/json" \
+  -d @samples/payloads/baseline_playback.json
+```
+
+返回结果样例见 [baseline_playback_report.json](./samples/results/baseline_playback_report.json)。
+
 ## 仓库结构
 
 ```text
 autoscript-public/
 ├── common/
 │   ├── stall_detector.py        # 卡顿识别与聚类
-│   └── resolution_detector.py   # 分辨率时间线提取
+│   ├── resolution_detector.py   # 分辨率时间线提取
+│   └── demo_job_runner.py       # mock 场景编排与报告汇总
+├── app/
+│   ├── __init__.py              # Flask app factory
+│   └── server.py                # worker demo API
 ├── tools/
 │   ├── parse_demo_log.py        # 输出状态卡顿解析 CLI
 │   ├── parse_timeout_log.py     # 超时聚类解析 CLI
 │   ├── parse_resolution_log.py  # 分辨率解析 CLI
-│   └── run_demo_suite.py        # 一次跑完全部样例
+│   ├── run_demo_suite.py        # 一次跑完全部样例
+│   ├── run_mock_job.py          # 输出结构化 demo report
+│   └── run_worker_server.py     # 启动 worker demo 服务
 ├── samples/
 │   ├── logs/                    # 脱敏日志输入
+│   ├── payloads/                # mock 请求体
 │   └── results/                 # 预期结果输出
+├── tests/                       # 单元测试 / API 测试
 └── docs/                        # 架构、设计取舍、面试摘要
 ```
 
@@ -121,6 +149,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python3 tools/run_demo_suite.py
+python3 tools/run_mock_job.py
 ```
 
 ## 测试
@@ -151,6 +180,7 @@ APK 通常不是这个项目最有价值的展示物，而且往往涉及分发�
 
 - [项目架构](./docs/architecture.md)
 - [设计取舍](./docs/design-decisions.md)
+- [Worker API Demo](./docs/worker-api.md)
 - [面试摘要](./docs/interview-notes.md)
 - [公开范围说明](./docs/public-scope.md)
 

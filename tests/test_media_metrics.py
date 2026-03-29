@@ -10,6 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from common.resolution_detector import parse_resolution_log
+from common.demo_job_runner import run_demo_scenario
 from common.stall_detector import parse_output_log, parse_timeout_log
 
 
@@ -37,6 +38,13 @@ class MediaMetricsTest(unittest.TestCase):
         self.assertEqual(result["count"], 4)
         self.assertEqual(result["first_resolution"], "360P")
         self.assertEqual(result["last_resolution"], "1080P")
+
+    def test_demo_job_runner(self) -> None:
+        result = run_demo_scenario("baseline_playback")
+        self.assertEqual(result["scenario"]["name"], "baseline_playback")
+        self.assertEqual(result["summary"]["stall_count"], 2)
+        self.assertEqual(result["summary"]["final_resolution"], "1080P")
+
 
 
 if __name__ == "__main__":
