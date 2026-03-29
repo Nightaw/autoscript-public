@@ -9,15 +9,21 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from common.stall_detector import parse_output_log, to_pretty_json
+from common.resolution_detector import parse_resolution_log, to_pretty_json
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Parse a sanitized demo player log and extract output-state stall intervals."
+        description="Parse a sanitized decoder log and extract resolution transitions."
     )
-    parser.add_argument("log_path", help="Path to the demo log file.")
+    parser.add_argument("log_path", help="Path to the demo resolution log file.")
     parser.add_argument("--year", type=int, default=None, help="Optional explicit year.")
+    parser.add_argument(
+        "--blacklist",
+        nargs="*",
+        default=["1088x368"],
+        help="Raw resolutions to ignore, e.g. 1088x368.",
+    )
     return parser
 
 
@@ -25,7 +31,7 @@ def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
 
-    result = parse_output_log(args.log_path, year=args.year)
+    result = parse_resolution_log(args.log_path, year=args.year, blacklist=args.blacklist)
     print(to_pretty_json(result))
     return 0
 

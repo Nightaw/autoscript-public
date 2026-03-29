@@ -1,0 +1,31 @@
+{
+  "count": 4,
+  "first_resolution": "360P",
+  "last_resolution": "1080P",
+  "events": [
+    {
+      "timestr": "03-27 10:20:00.100",
+      "time": 1774578000.1,
+      "resolution": "360P",
+      "resolution_raw": "640x360"
+    },
+    {
+      "timestr": "03-27 10:20:03.000",
+      "time": 1774578003.0,
+      "resolution": "540P",
+      "resolution_raw": "960x540"
+    },
+    {
+      "timestr": "03-27 10:20:06.400",
+      "time": 1774578006.4,
+      "resolution": "720P",
+      "resolution_raw": "1280x720"
+    },
+    {
+      "timestr": "03-27 10:20:09.800",
+      "time": 1774578009.8,
+      "resolution": "1080P",
+      "resolution_raw": "1920x1080"
+    }
+  ]
+}

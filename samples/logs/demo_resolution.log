@@ -1,0 +1,8 @@
+03-27 10:20:00.100 I Codec2: c2::u32 raw.size.width = 640
+03-27 10:20:00.100 I Codec2: c2::u32 raw.size.height = 360
+03-27 10:20:03.000 I Codec2: c2::u32 raw.size.width = 960
+03-27 10:20:03.000 I Codec2: c2::u32 raw.size.height = 540
+03-27 10:20:06.400 I Codec2: c2::u32 raw.size.width = 1280
+03-27 10:20:06.400 I Codec2: c2::u32 raw.size.height = 720
+03-27 10:20:09.800 I Codec2: c2::u32 raw.size.width = 1920
+03-27 10:20:09.800 I Codec2: c2::u32 raw.size.height = 1080

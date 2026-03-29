@@ -1,0 +1,25 @@
+{
+  "count": 2,
+  "total_duration": 2.5,
+  "max_duration": 1.75,
+  "stalls": [
+    {
+      "start": 1774576805.12,
+      "end": 1774576806.87,
+      "duration": 1.75,
+      "sources": [
+        "output_state"
+      ],
+      "event_count": 2
+    },
+    {
+      "start": 1774576812.3,
+      "end": 1774576813.05,
+      "duration": 0.75,
+      "sources": [
+        "output_state"
+      ],
+      "event_count": 2
+    }
+  ]
+}
