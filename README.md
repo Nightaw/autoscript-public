@@ -2,20 +2,18 @@
 
 [![CI](https://github.com/Nightaw/autoscript-public/actions/workflows/ci.yml/badge.svg)](https://github.com/Nightaw/autoscript-public/actions/workflows/ci.yml)
 
-一个面向 GitHub 展示的公开版仓库，用来呈现“移动端音视频自动化测试框架”的工程化思路，以及其中最适合公开演示的核心分析能力。
+公开版移动端音视频自动化测试框架 demo，聚焦于质量指标提取、结构化结果输出和 worker 形态的工程组织。
 
-## 这是什么
+## Overview
 
-这个仓库不是把原始工作项目整包搬上来，而是把其中最有技术展示价值、且适合公开的部分重构成一个可运行 demo：
+This repository presents a sanitized, runnable slice of a mobile media quality automation system. It focuses on the parts that are most suitable for public demonstration:
 
 - 播放器输出状态卡顿识别
 - 多信号超时事件聚类
 - 分辨率变化时间线提取
 - mock worker 服务与结构化报告输出
 
-仓库中的代码、样例和文档都围绕一个目标展开：让面试官能在很短时间内看懂这个项目解决什么问题、你做了哪些事情、你的实现思路是否靠谱。
-
-## 这个仓库解决什么问题
+## Problem Scope
 
 移动端音视频质量测试真正困难的地方，不是“写一个自动化脚本点点点”，而是把下面这些能力串成一条能复用的链路：
 
@@ -27,7 +25,7 @@
 
 这个公开版仓库重点展示其中的“结果提取”和“工程化组织”。
 
-## 架构视图
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -41,20 +39,25 @@ flowchart LR
     G --> H
 ```
 
-## 为什么仓库内容没有原项目那么多
+## Key Capabilities
 
-因为公开版的目标不是“文件数量尽量多”，而是“展示你真正的技术能力且不泄漏公司资产”。
+### Output-State Stall Extraction
 
-原始项目里很多内容不适合直接公开：
+Recovers stall intervals by pairing `stopOutput()` and `startOutput()` events from sanitized player logs.
 
-- 内网地址和设备清单
-- 数据库连接和账号密码
-- 强依赖真实环境的业务脚本
-- 内部 APK、接口和样本
+### Timeout Cluster Detection
 
-所以这里保留的是最能证明能力的部分：架构、指标提取思路、可运行 demo、输入输出样例和面试讲法。
+Groups weak signals such as video timeouts, audio timeouts, display idle events, and render timeouts into higher-confidence stall windows.
 
-## 当前可运行的 Demo
+### Resolution Timeline Extraction
+
+Builds a normalized resolution timeline from decoder log width/height changes.
+
+### Mock Worker Reporting
+
+Runs a demo scenario and aggregates multiple metrics into a single structured report that can be returned by an API.
+
+## Demos
 
 ### 1. Output-State Stall Demo
 
@@ -116,7 +119,7 @@ curl -X POST http://127.0.0.1:7777/demo/run \
 
 返回结果样例见 [baseline_playback_report.json](./samples/results/baseline_playback_report.json)。
 
-## 仓库结构
+## Repository Layout
 
 ```text
 autoscript-public/
@@ -142,7 +145,7 @@ autoscript-public/
 └── docs/                        # 架构、设计取舍、面试摘要
 ```
 
-## 快速开始
+## Quick Start
 
 ```bash
 python3 -m venv .venv
@@ -152,39 +155,25 @@ python3 tools/run_demo_suite.py
 python3 tools/run_mock_job.py
 ```
 
-## 测试
+## Tests
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-## 面试时可以怎么讲
+## Repository Notes
 
-一句话版本：
+This repository is intentionally scoped to sanitized demo components, sample inputs, and reproducible outputs. Internal environments, business-bound scripts, private endpoints, credentials, and binary assets are excluded from the public version.
 
-> 我做的是一类移动端音视频自动化测试框架。它不只是做真机控制，还会把采集到的日志和视频进一步解析成卡顿、分辨率等质量指标，形成结构化结果。
-
-展开讲时可以重点说三件事：
-
-1. 为什么要做统一 worker 和统一设备抽象
-2. 为什么单靠一种信号不够，要做多信号指标融合
-3. 为什么公开版仓库保留的是可运行 demo 和设计思路，而不是直接搬运内部脚本
-
-更完整的话术见 [interview-notes.md](./docs/interview-notes.md)。
-
-## 为什么没有上传 APK
-
-APK 通常不是这个项目最有价值的展示物，而且往往涉及分发权限、版权和公司资产边界。对面试更有帮助的，是把你的架构抽象、后处理逻辑、输入输出样例和设计取舍讲清楚。
-
-## 文档
+## Documentation
 
 - [项目架构](./docs/architecture.md)
 - [设计取舍](./docs/design-decisions.md)
 - [Worker API Demo](./docs/worker-api.md)
-- [面试摘要](./docs/interview-notes.md)
+- [项目摘要](./docs/interview-notes.md)
 - [公开范围说明](./docs/public-scope.md)
 
-## 注意事项
+## Notes
 
 - 这不是原始工作仓库。
 - 仓库中的示例代码和样例数据均为公开展示用途。
