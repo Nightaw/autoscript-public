@@ -26,6 +26,7 @@ class WorkerApiTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
         self.assertEqual(data["scenarios"][0]["name"], "baseline_playback")
+        self.assertEqual(len(data["scenarios"][0]["steps"]), 5)
 
     def test_run_demo(self) -> None:
         response = self.client.post("/demo/run", json={"scenario": "baseline_playback"})
@@ -33,3 +34,15 @@ class WorkerApiTest(unittest.TestCase):
         data = response.get_json()
         self.assertEqual(data["summary"]["stall_count"], 2)
         self.assertEqual(data["summary"]["final_resolution"], "1080P")
+
+    def test_devices(self) -> None:
+        response = self.client.get("/demo/devices?platform=android")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertTrue(all(device["platform"] == "android" for device in data["devices"]))
+
+    def test_markdown_report(self) -> None:
+        response = self.client.get("/demo/report.md?scenario=baseline_playback")
+        self.assertEqual(response.status_code, 200)
+        body = response.get_data(as_text=True)
+        self.assertIn("# Baseline Playback Quality Run", body)

@@ -2,7 +2,75 @@
   "scenario": {
     "name": "baseline_playback",
     "title": "Baseline Playback Quality Run",
-    "description": "Mock worker job that simulates a playback task, then combines output-state stalls, timeout clusters, and resolution transitions into one structured report."
+    "description": "Mock worker job that simulates a playback task, then combines output-state stalls, timeout clusters, and resolution transitions into one structured report.",
+    "steps": [
+      "launch_app",
+      "warmup_playback",
+      "background_foreground",
+      "seek_forward",
+      "quality_switch"
+    ]
+  },
+  "devices": [
+    {
+      "device_id": "android-pixel7-01",
+      "platform": "android",
+      "os_version": "14",
+      "model": "Pixel 7",
+      "role": "main",
+      "tags": [
+        "wifi",
+        "playback",
+        "baseline"
+      ]
+    },
+    {
+      "device_id": "android-galaxy-s22-aux",
+      "platform": "android",
+      "os_version": "13",
+      "model": "Galaxy S22",
+      "role": "auxiliary",
+      "tags": [
+        "capture",
+        "auxiliary"
+      ]
+    }
+  ],
+  "execution": {
+    "status": "passed",
+    "total_duration_sec": 19.4,
+    "steps": [
+      {
+        "name": "launch_app",
+        "status": "passed",
+        "duration_sec": 2.4,
+        "details": "Bootstrapped app session and confirmed player landing page."
+      },
+      {
+        "name": "warmup_playback",
+        "status": "passed",
+        "duration_sec": 5.2,
+        "details": "Started baseline playback and collected initial player telemetry."
+      },
+      {
+        "name": "background_foreground",
+        "status": "passed",
+        "duration_sec": 4.8,
+        "details": "Sent app to background and restored playback session."
+      },
+      {
+        "name": "seek_forward",
+        "status": "passed",
+        "duration_sec": 3.1,
+        "details": "Performed forward seek to trigger decoder and rendering transitions."
+      },
+      {
+        "name": "quality_switch",
+        "status": "passed",
+        "duration_sec": 3.9,
+        "details": "Changed playback quality and tracked resulting resolution timeline."
+      }
+    ]
   },
   "metrics": {
     "output_stalls": {
@@ -34,7 +102,6 @@
       "count": 2,
       "total_duration": 1.47,
       "max_duration": 0.77,
-      "input_event_count": 6,
       "stalls": [
         {
           "start": 1774577400.0,
@@ -58,7 +125,8 @@
           ],
           "event_count": 3
         }
-      ]
+      ],
+      "input_event_count": 6
     },
     "resolution_timeline": {
       "count": 4,
@@ -97,5 +165,10 @@
     "timeout_cluster_count": 2,
     "resolution_change_count": 4,
     "final_resolution": "1080P"
+  },
+  "artifacts": {
+    "sample_payload": "samples/payloads/baseline_playback.json",
+    "sample_markdown_report": "samples/results/baseline_playback_report.md",
+    "sample_json_report": "samples/results/baseline_playback_report.json"
   }
 }

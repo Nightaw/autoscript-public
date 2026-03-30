@@ -10,7 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from common.resolution_detector import parse_resolution_log
-from common.demo_job_runner import run_demo_scenario
+from common.demo_job_runner import build_markdown_report, list_available_devices, run_demo_scenario
 from common.stall_detector import parse_output_log, parse_timeout_log
 
 
@@ -44,6 +44,20 @@ class MediaMetricsTest(unittest.TestCase):
         self.assertEqual(result["scenario"]["name"], "baseline_playback")
         self.assertEqual(result["summary"]["stall_count"], 2)
         self.assertEqual(result["summary"]["final_resolution"], "1080P")
+        self.assertEqual(result["execution"]["status"], "passed")
+        self.assertEqual(len(result["execution"]["steps"]), 5)
+        self.assertEqual(result["devices"][0]["platform"], "android")
+
+    def test_device_registry(self) -> None:
+        devices = list_available_devices(platform="android")
+        self.assertGreaterEqual(len(devices), 1)
+        self.assertTrue(all(device["platform"] == "android" for device in devices))
+
+    def test_markdown_report(self) -> None:
+        report = build_markdown_report("baseline_playback")
+        self.assertIn("# Baseline Playback Quality Run", report)
+        self.assertIn("## Devices", report)
+        self.assertIn("Final resolution: 1080P", report)
 
 
 

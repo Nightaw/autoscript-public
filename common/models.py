@@ -1,0 +1,62 @@
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass, field
+
+
+@dataclass(frozen=True)
+class DeviceInfo:
+    device_id: str
+    platform: str
+    os_version: str
+    model: str
+    role: str
+    tags: tuple[str, ...] = ()
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class StepResult:
+    name: str
+    status: str
+    duration_sec: float
+    details: str
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class ScenarioDefinition:
+    name: str
+    title: str
+    description: str
+    steps: tuple[str, ...]
+    preferred_platforms: tuple[str, ...]
+    output_log: str
+    timeout_log: str
+    resolution_log: str
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass
+class JobReport:
+    scenario: dict
+    devices: list[dict]
+    execution: dict
+    metrics: dict
+    summary: dict
+    artifacts: dict = field(default_factory=dict)
+
+    def to_dict(self) -> dict:
+        return {
+            "scenario": self.scenario,
+            "devices": self.devices,
+            "execution": self.execution,
+            "metrics": self.metrics,
+            "summary": self.summary,
+            "artifacts": self.artifacts,
+        }

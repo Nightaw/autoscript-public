@@ -57,6 +57,10 @@ Builds a normalized resolution timeline from decoder log width/height changes.
 
 Runs a demo scenario and aggregates multiple metrics into a single structured report that can be returned by an API.
 
+### Mock Device Registry And Scenario Execution
+
+Includes a deterministic device registry, scenario step model, execution timeline, and Markdown/JSON report export so the repository reads like a framework rather than a loose set of parsers.
+
 ## Demos
 
 ### 1. Output-State Stall Demo
@@ -126,6 +130,10 @@ autoscript-public/
 ├── common/
 │   ├── stall_detector.py        # 卡顿识别与聚类
 │   ├── resolution_detector.py   # 分辨率时间线提取
+│   ├── device_registry.py       # mock 设备发现与筛选
+│   ├── scenario_runner.py       # mock 场景步骤执行
+│   ├── report_formatter.py      # Markdown 报告导出
+│   ├── models.py                # 报告与设备数据模型
 │   └── demo_job_runner.py       # mock 场景编排与报告汇总
 ├── app/
 │   ├── __init__.py              # Flask app factory
@@ -136,11 +144,12 @@ autoscript-public/
 │   ├── parse_resolution_log.py  # 分辨率解析 CLI
 │   ├── run_demo_suite.py        # 一次跑完全部样例
 │   ├── run_mock_job.py          # 输出结构化 demo report
+│   ├── export_report_markdown.py# 导出 Markdown 报告
 │   └── run_worker_server.py     # 启动 worker demo 服务
 ├── samples/
 │   ├── logs/                    # 脱敏日志输入
 │   ├── payloads/                # mock 请求体
-│   └── results/                 # 预期结果输出
+│   └── results/                 # JSON / Markdown 示例报告
 ├── tests/                       # 单元测试 / API 测试
 └── docs/                        # 架构、设计取舍、面试摘要
 ```
@@ -153,6 +162,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 python3 tools/run_demo_suite.py
 python3 tools/run_mock_job.py
+python3 tools/export_report_markdown.py
 ```
 
 ## Tests

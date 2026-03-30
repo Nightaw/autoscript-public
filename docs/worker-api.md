@@ -24,6 +24,10 @@ python3 tools/run_worker_server.py
 ok
 ```
 
+### `GET /demo/devices`
+
+返回 mock 设备清单，支持 `platform` 和 `role` 查询参数。
+
 ### `GET /demo/scenarios`
 
 返回当前可运行的 demo 场景列表。
@@ -42,6 +46,10 @@ ok
 
 示例返回见 [baseline_playback_report.json](../samples/results/baseline_playback_report.json)。
 
+### `GET /demo/report.md`
+
+返回 Markdown 形式的 demo 报告，便于直接嵌入 wiki、文档或 PR 描述中。
+
 ## 为什么这层有价值
 
 因为真实项目通常不是“人工执行一个脚本然后看 stdout”，而是：
@@ -49,5 +57,6 @@ ok
 - 上层调度系统下发任务
 - worker 节点执行场景
 - worker 节点返回结构化结果
+- 报告结果被进一步写入文档系统或质量平台
 
 即使公开版不能带出真实调度系统，也应该把这种接口形态展示出来。

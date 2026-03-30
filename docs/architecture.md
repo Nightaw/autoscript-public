@@ -35,6 +35,8 @@ Worker Service
 
 屏蔽 Android / iOS 差异，把设备连接、应用启动、录屏、手势操作等能力沉淀到公共层。这样业务脚本关注的是“要做什么场景”，而不是每次都重写底层控制逻辑。
 
+公开版仓库里使用了 mock device registry 和 deterministic scenario runner 来演示这一层的组织方式。
+
 ### Scenario Scripts
 
 按业务形态拆分，例如：
@@ -68,6 +70,10 @@ Worker Service
 ### 分辨率变化时间线
 
 通过解析宽高变化日志输出规范化分辨率时间线，体现质量指标提取不止有“卡不卡”，还有“清晰度如何变化”。
+
+### Mock 场景执行与报告导出
+
+公开版还额外展示了场景步骤编排、设备筛选、JSON / Markdown 报告导出，以及通过 Flask API 暴露执行结果的方式。
 
 ## 为什么这种结构适合放在简历里
 
