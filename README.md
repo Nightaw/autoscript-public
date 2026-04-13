@@ -4,9 +4,6 @@
 
 ![AutoScript Public Overview](./docs/hero.svg)
 
-这是我从本地移动端音视频自动化测试项目里整理出来的一份公开版 demo。  
-我没有去做“把原项目原样搬上来”这件事，而是把我觉得最有代表性的几层能力重新抽出来，做成一个可以直接运行、也方便别人快速看懂的版本。
-
 现在这份公开版主要保留了三类东西：
 
 - 日志指标提取：卡顿、超时聚类、分辨率变化
@@ -25,7 +22,7 @@
 
 所以这个仓库重点展示的不是某个单独脚本，而是这套链路里最有工程味的部分。
 
-## 这次公开版里有什么
+## 基本内容
 
 ### 1. Output-State Stall
 
@@ -158,7 +155,7 @@ python3 tools/demo_job_lifecycle.py
 - [resolution_timeline.json](./samples/results/resolution_timeline.json)
 - [app_log_resolution_timeline.json](./samples/results/app_log_resolution_timeline.json)
 
-## 我觉得这个项目最值钱的地方
+## 项目两点
 
 不是“自动化点点点”，而是下面这些更偏工程化的事情：
 
@@ -177,6 +174,4 @@ python3 tools/demo_job_lifecycle.py
 
 ## 说明
 
-这不是原始工作仓库，而是我整理出来的公开版。  
-我保留的是我认为最能体现能力的部分：架构、parser、执行链路、结果输出和工程组织方式。  
-真实环境相关内容、内部接口、设备清单、业务脚本全集和二进制资产都没有直接带出来。
+目前保留的是我认为最能体现能力的部分：架构、parser、执行链路、结果输出和工程组织方式。 
