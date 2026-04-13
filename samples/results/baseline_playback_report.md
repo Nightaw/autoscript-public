@@ -27,3 +27,4 @@ Mock worker job that simulates a playback task, then combines output-state stall
 - Output-state stalls: 2 intervals
 - Timeout clusters: 2 windows
 - Resolution timeline points: 4 changes
+- App-log resolution points: 4 changes

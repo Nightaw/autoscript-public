@@ -57,6 +57,16 @@ Worker Service
 
 公开版仓库优先展示日志后处理这条链路，因为它更适合脱敏重构，也更容易做成可运行 demo。
 
+### Parser Layer
+
+随着项目复杂度增长，解析逻辑继续按“领域 + 日志来源”拆分会更合理，例如：
+
+- `parsers/stall/sys_log_parser.py`
+- `parsers/resolution/sys_log_parser.py`
+- `parsers/resolution/app_log_parser.py`
+
+这样可以把通用算法、入口函数、调用边界和业务脚本依赖关系分开管理。
+
 ## 当前公开版展示了什么
 
 ### 输出状态卡顿识别

@@ -2,180 +2,153 @@
 
 [![CI](https://github.com/Nightaw/autoscript-public/actions/workflows/ci.yml/badge.svg)](https://github.com/Nightaw/autoscript-public/actions/workflows/ci.yml)
 
-公开版移动端音视频自动化测试框架 demo，聚焦于质量指标提取、结构化结果输出和 worker 形态的工程组织。
+这是我从本地移动端音视频自动化测试项目里整理出来的一份公开版 demo。  
+我没有去做“把原项目原样搬上来”这件事，而是把我觉得最有代表性的几层能力重新抽出来，做成一个可以直接运行、也方便别人快速看懂的版本。
 
-## Overview
+现在这份公开版主要保留了三类东西：
 
-This repository presents a sanitized, runnable slice of a mobile media quality automation system. It focuses on the parts that are most suitable for public demonstration:
+- 日志指标提取：卡顿、超时聚类、分辨率变化
+- worker 形态：设备清单、场景执行、结构化结果输出
+- parser 模块化：按 `stall / resolution`、按 `sys_log / app_log` 拆分入口
 
-- 播放器输出状态卡顿识别
-- 多信号超时事件聚类
-- 分辨率变化时间线提取
-- mock worker 服务与结构化报告输出
+## 我想解决的问题
 
-## Problem Scope
+做移动端音视频质量测试时，真正麻烦的往往不是“把 App 点起来”，而是怎么把下面这条链路做稳定：
 
-移动端音视频质量测试真正困难的地方，不是“写一个自动化脚本点点点”，而是把下面这些能力串成一条能复用的链路：
+- 任务进入执行节点
+- 真机完成场景动作
+- 录屏和日志被采集下来
+- 卡顿、分辨率等指标被稳定提取
+- 最后输出成结构化结果，方便回归和比对
 
-- 真机执行场景
-- 录屏与日志采集
-- 卡顿与分辨率等指标提取
-- 结果结构化输出
-- 新业务的快速接入
+所以这个仓库重点展示的不是某个单独脚本，而是这套链路里最有工程味的部分。
 
-这个公开版仓库重点展示其中的“结果提取”和“工程化组织”。
+## 这次公开版里有什么
 
-## Architecture
+### 1. Output-State Stall
+
+最基础的一条卡顿识别路径。  
+根据播放器日志里的 `stopOutput()` / `startOutput()` 事件配对出卡顿区间。
+
+### 2. Timeout Cluster
+
+比单一状态更进一步。  
+把视频超时、音频超时、显示 idle、渲染超时这类弱信号按时间邻近性聚类，得到更接近真实异常窗口的结果。
+
+### 3. Resolution Timeline
+
+从系统日志里提取解码宽高变化，输出规范化分辨率时间线。
+
+### 4. App Log Resolution Parser
+
+除了系统日志，这里还补了 app log 侧的 RTC `render_stats` 解析。  
+这部分主要是为了体现最近这波重构里 parser 的模块化方向。
+
+### 5. Mock Worker Pipeline
+
+公开版里有一套简化过的 worker 流程：
+
+- mock device registry
+- mock scenario runner
+- JSON report
+- Markdown report
+- Flask API
+
+这样仓库看起来更像一个小型框架，而不是一堆离散的解析脚本。
+
+## 架构图
 
 ```mermaid
 flowchart LR
     A["Scheduler / Client"] --> B["Worker Service"]
-    B --> C["Device Discovery"]
+    B --> C["Device Registry"]
     B --> D["Scenario Runner"]
-    B --> E["Artifact Collection"]
-    E --> F["Log Parsing"]
-    E --> G["OCR / Video Post-process"]
+    D --> E["Artifact Collection"]
+    E --> F["System Log Parsers"]
+    E --> G["App Log Parsers"]
     F --> H["Structured Metrics"]
     G --> H
+    H --> I["JSON / Markdown Reports"]
 ```
 
-## Key Capabilities
-
-### Output-State Stall Extraction
-
-Recovers stall intervals by pairing `stopOutput()` and `startOutput()` events from sanitized player logs.
-
-### Timeout Cluster Detection
-
-Groups weak signals such as video timeouts, audio timeouts, display idle events, and render timeouts into higher-confidence stall windows.
-
-### Resolution Timeline Extraction
-
-Builds a normalized resolution timeline from decoder log width/height changes.
-
-### Mock Worker Reporting
-
-Runs a demo scenario and aggregates multiple metrics into a single structured report that can be returned by an API.
-
-### Mock Device Registry And Scenario Execution
-
-Includes a deterministic device registry, scenario step model, execution timeline, and Markdown/JSON report export so the repository reads like a framework rather than a loose set of parsers.
-
-## Demos
-
-### 1. Output-State Stall Demo
-
-通过 `stopOutput()` / `startOutput()` 配对恢复卡顿区间。
-
-运行：
-
-```bash
-python3 tools/parse_demo_log.py samples/logs/demo_player.log
-```
-
-结果样例见 [output_stalls.json](./samples/results/output_stalls.json)。
-
-### 2. Timeout Cluster Demo
-
-把视频超时、音频超时、显示 idle、渲染超时等弱信号按时间邻近性聚类，得到“疑似卡顿窗口”。
-
-运行：
-
-```bash
-python3 tools/parse_timeout_log.py samples/logs/demo_timeout.log
-```
-
-结果样例见 [timeout_clusters.json](./samples/results/timeout_clusters.json)。
-
-### 3. Resolution Timeline Demo
-
-解析解码器日志中的 `raw.size.width/height` 变化，输出规范化分辨率时间线。
-
-运行：
-
-```bash
-python3 tools/parse_resolution_log.py samples/logs/demo_resolution.log
-```
-
-结果样例见 [resolution_timeline.json](./samples/results/resolution_timeline.json)。
-
-### 4. Run All Demos
-
-```bash
-python3 tools/run_demo_suite.py
-```
-
-### 5. Mock Worker API Demo
-
-启动本地 worker：
-
-```bash
-python3 tools/run_worker_server.py
-```
-
-然后触发一次 mock job：
-
-```bash
-curl -X POST http://127.0.0.1:7777/demo/run \
-  -H "Content-Type: application/json" \
-  -d @samples/payloads/baseline_playback.json
-```
-
-返回结果样例见 [baseline_playback_report.json](./samples/results/baseline_playback_report.json)。
-
-## Repository Layout
+## 目录结构
 
 ```text
 autoscript-public/
-├── common/
-│   ├── stall_detector.py        # 卡顿识别与聚类
-│   ├── resolution_detector.py   # 分辨率时间线提取
-│   ├── device_registry.py       # mock 设备发现与筛选
-│   ├── scenario_runner.py       # mock 场景步骤执行
-│   ├── report_formatter.py      # Markdown 报告导出
-│   ├── models.py                # 报告与设备数据模型
-│   └── demo_job_runner.py       # mock 场景编排与报告汇总
-├── app/
-│   ├── __init__.py              # Flask app factory
-│   └── server.py                # worker demo API
-├── tools/
-│   ├── parse_demo_log.py        # 输出状态卡顿解析 CLI
-│   ├── parse_timeout_log.py     # 超时聚类解析 CLI
-│   ├── parse_resolution_log.py  # 分辨率解析 CLI
-│   ├── run_demo_suite.py        # 一次跑完全部样例
-│   ├── run_mock_job.py          # 输出结构化 demo report
-│   ├── export_report_markdown.py# 导出 Markdown 报告
-│   └── run_worker_server.py     # 启动 worker demo 服务
+├── app/                       # mock worker API
+├── common/                    # 模型、registry、runner、formatter
+├── parsers/
+│   ├── stall/                 # stall parser 入口
+│   └── resolution/            # resolution parser 入口
+├── tools/                     # CLI 工具
 ├── samples/
-│   ├── logs/                    # 脱敏日志输入
-│   ├── payloads/                # mock 请求体
-│   └── results/                 # JSON / Markdown 示例报告
-├── tests/                       # 单元测试 / API 测试
-└── docs/                        # 架构、设计取舍、面试摘要
+│   ├── logs/                  # 脱敏日志样例
+│   ├── payloads/              # mock 请求体
+│   └── results/               # JSON / Markdown 输出样例
+├── tests/                     # 单元测试 / API 测试
+└── docs/                      # 架构说明与补充文档
 ```
 
-## Quick Start
+## 快速体验
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+### 跑全部 demo
+
+```bash
 python3 tools/run_demo_suite.py
+```
+
+### 跑 mock job
+
+```bash
 python3 tools/run_mock_job.py
+```
+
+### 导出 Markdown 报告
+
+```bash
 python3 tools/export_report_markdown.py
 ```
 
-## Tests
+### 解析 RTC app log
 
 ```bash
-python3 -m unittest discover -s tests -v
+python3 tools/parse_app_log_resolution.py samples/logs/demo_rtc_app.log
 ```
 
-## Repository Notes
+### 启动 worker API
 
-This repository is intentionally scoped to sanitized demo components, sample inputs, and reproducible outputs. Internal environments, business-bound scripts, private endpoints, credentials, and binary assets are excluded from the public version.
+```bash
+python3 tools/run_worker_server.py
+curl -X POST http://127.0.0.1:7777/demo/run \
+  -H "Content-Type: application/json" \
+  -d @samples/payloads/baseline_playback.json
+```
 
-## Documentation
+## 样例输出
+
+- [baseline_playback_report.json](./samples/results/baseline_playback_report.json)
+- [baseline_playback_report.md](./samples/results/baseline_playback_report.md)
+- [output_stalls.json](./samples/results/output_stalls.json)
+- [timeout_clusters.json](./samples/results/timeout_clusters.json)
+- [resolution_timeline.json](./samples/results/resolution_timeline.json)
+- [app_log_resolution_timeline.json](./samples/results/app_log_resolution_timeline.json)
+
+## 我觉得这个项目最值钱的地方
+
+不是“自动化点点点”，而是下面这些更偏工程化的事情：
+
+- 把解析逻辑从业务脚本里拆出来，形成独立 parser 层
+- 把设备、场景、执行步骤、报告结构做成明确模型
+- 同时支持 JSON 报告和 Markdown 报告，方便接接口和接文档
+- 用 API + tests + CI 把 demo 仓库也做成一个可维护的小项目
+
+## 文档
 
 - [项目架构](./docs/architecture.md)
 - [设计取舍](./docs/design-decisions.md)
@@ -183,8 +156,8 @@ This repository is intentionally scoped to sanitized demo components, sample inp
 - [项目摘要](./docs/interview-notes.md)
 - [公开范围说明](./docs/public-scope.md)
 
-## Notes
+## 说明
 
-- 这不是原始工作仓库。
-- 仓库中的示例代码和样例数据均为公开展示用途。
-- 如果继续扩展这个仓库，应坚持“脱敏重构优先”而不是“直接搬运原项目文件”。
+这不是原始工作仓库，而是我整理出来的公开版。  
+我保留的是我认为最能体现能力的部分：架构、parser、执行链路、结果输出和工程组织方式。  
+真实环境相关内容、内部接口、设备清单、业务脚本全集和二进制资产都没有直接带出来。

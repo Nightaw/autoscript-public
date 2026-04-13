@@ -46,3 +46,10 @@ class WorkerApiTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         body = response.get_data(as_text=True)
         self.assertIn("# Baseline Playback Quality Run", body)
+
+    def test_architecture(self) -> None:
+        response = self.client.get("/demo/architecture")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertGreaterEqual(data["scenario_count"], 2)
+        self.assertGreaterEqual(data["device_count"], 1)

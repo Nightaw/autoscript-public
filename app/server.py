@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 
 from common.demo_job_runner import (
     build_markdown_report,
+    describe_architecture,
     list_available_devices,
     list_scenarios,
     run_demo_scenario,
@@ -24,6 +25,10 @@ def register_routes(app: Flask) -> None:
     @app.get("/demo/scenarios")
     def scenarios():
         return jsonify({"scenarios": list_scenarios()})
+
+    @app.get("/demo/architecture")
+    def architecture():
+        return jsonify(describe_architecture())
 
     @app.post("/demo/run")
     def run_demo():

@@ -32,6 +32,10 @@ ok
 
 返回当前可运行的 demo 场景列表。
 
+### `GET /demo/architecture`
+
+返回公开版 mock framework 的架构摘要，包括场景数量、设备数量和已注册 parser 列表。
+
 ### `POST /demo/run`
 
 触发一次 mock job，返回结构化质量报告。

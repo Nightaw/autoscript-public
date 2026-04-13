@@ -11,7 +11,10 @@ if str(ROOT) not in sys.path:
 
 from common.resolution_detector import parse_resolution_log
 from common.demo_job_runner import build_markdown_report, list_available_devices, run_demo_scenario
+from common.parser_registry import list_parsers
 from common.stall_detector import parse_output_log, parse_timeout_log
+from parsers.resolution.app_log_parser import extract_resolutions_from_app_render_stats
+from parsers.stall.sys_log_parser import extract_cloud_game_pid_stalls
 
 
 class MediaMetricsTest(unittest.TestCase):
@@ -58,6 +61,23 @@ class MediaMetricsTest(unittest.TestCase):
         self.assertIn("# Baseline Playback Quality Run", report)
         self.assertIn("## Devices", report)
         self.assertIn("Final resolution: 1080P", report)
+
+    def test_app_log_resolution_parser(self) -> None:
+        events = extract_resolutions_from_app_render_stats(self.samples / "demo_rtc_app.log")
+        self.assertEqual(len(events), 4)
+        self.assertEqual(events[-1]["resolution"], "1080P")
+
+    def test_parser_registry(self) -> None:
+        parsers = list_parsers(category="resolution")
+        names = {item["name"] for item in parsers}
+        self.assertIn("resolution.raw_size", names)
+        self.assertIn("resolution.app_render_stats", names)
+
+    def test_cloud_game_pid_parser(self) -> None:
+        path = self.samples / "demo_cloud_game.log"
+        result = extract_cloud_game_pid_stalls(path, year=2026)
+        self.assertEqual(result["pids"], ["1357", "2468"])
+        self.assertEqual(len(result["transitions"]["1357"]), 1)
 
 
 

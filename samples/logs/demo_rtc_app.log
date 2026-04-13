@@ -1,0 +1,4 @@
+2026-03-27 10:30:00.100 rtc-sdk render_stats render_started:true is_render_enabled:true strm_uid:20001 rnd_w:640 rnd_h:360
+2026-03-27 10:30:02.500 rtc-sdk render_stats render_started:true is_render_enabled:true strm_uid:20001 rnd_w:960 rnd_h:540
+2026-03-27 10:30:05.300 rtc-sdk render_stats render_started:true is_render_enabled:true strm_uid:20001 rnd_w:1280 rnd_h:720
+2026-03-27 10:30:08.900 rtc-sdk render_stats render_started:true is_render_enabled:true strm_uid:20001 rnd_w:1920 rnd_h:1080

@@ -42,4 +42,7 @@ def render_markdown_report(report: dict) -> str:
     lines.append(
         f"- Resolution timeline points: {report['metrics']['resolution_timeline']['count']} changes"
     )
+    lines.append(
+        f"- App-log resolution points: {report['metrics']['app_log_resolution_timeline']['count']} changes"
+    )
     return "\n".join(lines)
