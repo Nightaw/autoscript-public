@@ -10,10 +10,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from app import create_app
+from common.job_queue import reset_jobs
 
 
 class WorkerApiTest(unittest.TestCase):
     def setUp(self) -> None:
+        reset_jobs()
         self.client = create_app().test_client()
 
     def test_health(self) -> None:
@@ -53,3 +55,23 @@ class WorkerApiTest(unittest.TestCase):
         data = response.get_json()
         self.assertGreaterEqual(data["scenario_count"], 2)
         self.assertGreaterEqual(data["device_count"], 1)
+
+    def test_job_lifecycle(self) -> None:
+        created = self.client.post("/demo/jobs", json={"scenario": "baseline_playback"})
+        self.assertEqual(created.status_code, 201)
+        job = created.get_json()
+        self.assertEqual(job["status"], "queued")
+
+        listed = self.client.get("/demo/jobs")
+        self.assertEqual(listed.status_code, 200)
+        self.assertEqual(len(listed.get_json()["jobs"]), 1)
+
+        processed = self.client.post("/demo/jobs/process")
+        self.assertEqual(processed.status_code, 200)
+        processed_job = processed.get_json()
+        self.assertEqual(processed_job["status"], "finished")
+        self.assertEqual(processed_job["report"]["summary"]["final_resolution"], "1080P")
+
+        detail = self.client.get(f"/demo/jobs/{processed_job['job_id']}")
+        self.assertEqual(detail.status_code, 200)
+        self.assertEqual(detail.get_json()["status"], "finished")

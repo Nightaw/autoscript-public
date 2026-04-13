@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Nightaw/autoscript-public/actions/workflows/ci.yml/badge.svg)](https://github.com/Nightaw/autoscript-public/actions/workflows/ci.yml)
 
+![AutoScript Public Overview](./docs/hero.svg)
+
 这是我从本地移动端音视频自动化测试项目里整理出来的一份公开版 demo。  
 我没有去做“把原项目原样搬上来”这件事，而是把我觉得最有代表性的几层能力重新抽出来，做成一个可以直接运行、也方便别人快速看懂的版本。
 
@@ -55,6 +57,17 @@
 - Flask API
 
 这样仓库看起来更像一个小型框架，而不是一堆离散的解析脚本。
+
+### 6. Job Lifecycle
+
+这次又往前补了一层轻量任务生命周期：
+
+- enqueue job
+- list jobs
+- process next job
+- query job detail
+
+这样首页展示的不再只是“直接跑一个脚本”，而是一个更接近真实 worker 的处理过程。
 
 ## 架构图
 
@@ -128,6 +141,12 @@ python3 tools/run_worker_server.py
 curl -X POST http://127.0.0.1:7777/demo/run \
   -H "Content-Type: application/json" \
   -d @samples/payloads/baseline_playback.json
+```
+
+### 体验 job lifecycle
+
+```bash
+python3 tools/demo_job_lifecycle.py
 ```
 
 ## 样例输出
