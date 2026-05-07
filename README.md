@@ -9,6 +9,7 @@
 - 日志指标提取：卡顿、超时聚类、分辨率变化
 - worker 形态：设备清单、场景执行、结构化结果输出
 - parser 模块化：按 `stall / resolution`、按 `sys_log / app_log` 拆分入口
+- agent 协作链路：展示 `manualscript -> clawscript -> autoscript` 的任务交接方式
 
 ## 我想解决的问题
 
@@ -66,6 +67,22 @@
 
 这样首页展示的不再只是“直接跑一个脚本”，而是一个更接近真实 worker 的处理过程。
 
+### 7. Agent Collaboration Trace
+
+最近一轮重构把项目进一步拆成了适合 agent 开发的协作形态：
+
+```text
+manualscript -> clawscript -> autoscript -> autoscript-public
+```
+
+这里新增了一个公开 trace，用来展示三类仓库如何交接：
+
+- `manualscript`：沉淀配置驱动的场景、参数和质量预期
+- `clawscript`：把自然语言任务转成 agent SOP、任务规格和执行护栏
+- `autoscript`：承接 worker 执行、日志解析、指标提取和报告输出
+
+`clawscript` 后续会作为配套仓库单独公开；当前仓库先把协作契约、运行时抽象和结果输出展示出来。
+
 ## 架构图
 
 ```mermaid
@@ -79,6 +96,15 @@ flowchart LR
     F --> H["Structured Metrics"]
     G --> H
     H --> I["JSON / Markdown Reports"]
+```
+
+## Agent 协作图
+
+```mermaid
+flowchart LR
+    M["manualscript\nscenario contract"] --> C["clawscript\nagent SOP + task spec"]
+    C --> A["autoscript\nworker + parsers + reports"]
+    A --> P["autoscript-public\nsanitized runnable demo"]
 ```
 
 ## 目录结构
@@ -146,6 +172,13 @@ curl -X POST http://127.0.0.1:7777/demo/run \
 python3 tools/demo_job_lifecycle.py
 ```
 
+### 查看 agent 协作 trace
+
+```bash
+python3 tools/show_agent_collaboration.py --format json
+python3 tools/show_agent_collaboration.py --format markdown
+```
+
 ## 样例输出
 
 - [baseline_playback_report.json](./samples/results/baseline_playback_report.json)
@@ -154,6 +187,9 @@ python3 tools/demo_job_lifecycle.py
 - [timeout_clusters.json](./samples/results/timeout_clusters.json)
 - [resolution_timeline.json](./samples/results/resolution_timeline.json)
 - [app_log_resolution_timeline.json](./samples/results/app_log_resolution_timeline.json)
+- [agent_collaboration_trace.json](./samples/results/agent_collaboration_trace.json)
+- [agent_collaboration_trace.md](./samples/results/agent_collaboration_trace.md)
+- [agent_short_video_report.json](./samples/results/agent_short_video_report.json)
 
 ## 项目两点
 
@@ -167,6 +203,7 @@ python3 tools/demo_job_lifecycle.py
 ## 文档
 
 - [项目架构](./docs/architecture.md)
+- [Agent 协作链路](./docs/agent-collaboration.md)
 - [设计取舍](./docs/design-decisions.md)
 - [Worker API Demo](./docs/worker-api.md)
 - [项目摘要](./docs/interview-notes.md)

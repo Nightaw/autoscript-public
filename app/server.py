@@ -9,6 +9,7 @@ from common.demo_job_runner import (
     list_scenarios,
     run_demo_scenario,
 )
+from common.agent_collaboration import build_collaboration_trace, render_collaboration_markdown
 from common.job_queue import enqueue_job, get_job, list_jobs, process_next_job
 
 
@@ -30,6 +31,17 @@ def register_routes(app: Flask) -> None:
     @app.get("/demo/architecture")
     def architecture():
         return jsonify(describe_architecture())
+
+    @app.get("/demo/agent-collaboration")
+    def agent_collaboration():
+        task_id = request.args.get("task_id", "8088")
+        return jsonify(build_collaboration_trace(task_id))
+
+    @app.get("/demo/agent-collaboration.md")
+    def agent_collaboration_markdown():
+        task_id = request.args.get("task_id", "8088")
+        trace = build_collaboration_trace(task_id)
+        return render_collaboration_markdown(trace), 200, {"Content-Type": "text/markdown; charset=utf-8"}
 
     @app.get("/demo/jobs")
     def jobs():

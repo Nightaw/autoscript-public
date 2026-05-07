@@ -36,6 +36,22 @@ ok
 
 返回公开版 mock framework 的架构摘要，包括场景数量、设备数量和已注册 parser 列表。
 
+### `GET /demo/agent-collaboration`
+
+返回 agent 化改造后的跨仓库协作 trace，展示 `manualscript -> clawscript -> autoscript -> autoscript-public` 的职责分工、任务契约和公开版产物边界。
+
+示例：
+
+```bash
+curl http://127.0.0.1:7777/demo/agent-collaboration?task_id=8088
+```
+
+示例返回见 [agent_collaboration_trace.json](../samples/results/agent_collaboration_trace.json)。
+
+### `GET /demo/agent-collaboration.md`
+
+返回 Markdown 形式的 agent 协作说明，适合直接放到文档、PR 或项目展示页里。
+
 ### `POST /demo/run`
 
 触发一次 mock job，返回结构化质量报告。

@@ -1,0 +1,53 @@
+{
+  "task_id": "8088",
+  "scenario": "short_video.agent_stall.basic",
+  "app_profile": "ShortVideoDemo",
+  "device_id": "demo-android-01",
+  "agent_runtime": {
+    "context_model": "AgentContext",
+    "entry_strategy": "generic_short_video_entry",
+    "popup_handler": "common_popup_handler",
+    "play_validator": "universal_play_state_validator",
+    "swiper": {
+      "strategy": "fingerprint_swiper",
+      "interval_sec": 5,
+      "planned_swipes": 12,
+      "completed_swipes": 12
+    },
+    "guards": {
+      "max_steps": 80,
+      "debug_capture_enabled": true,
+      "stall_detection_enabled": true
+    }
+  },
+  "execution": {
+    "status": "finished",
+    "watch_duration_sec": 60,
+    "started_at_ms": 1720000000000,
+    "ended_at_ms": 1720000060000
+  },
+  "metrics": {
+    "stall_count": 2,
+    "stall_total_ms": 1430,
+    "max_stall_ms": 870,
+    "resolution_changes": [
+      {
+        "timestamp_ms": 1720000012000,
+        "resolution": "720P"
+      },
+      {
+        "timestamp_ms": 1720000045000,
+        "resolution": "1080P"
+      }
+    ],
+    "signals": [
+      "audio_output_gap",
+      "frame_similarity",
+      "player_state_log"
+    ]
+  },
+  "artifacts": {
+    "debug_timeline": "samples/results/agent_collaboration_trace.json",
+    "public_markdown_trace": "samples/results/agent_collaboration_trace.md"
+  }
+}

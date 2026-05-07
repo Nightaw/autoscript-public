@@ -56,6 +56,21 @@ class WorkerApiTest(unittest.TestCase):
         self.assertGreaterEqual(data["scenario_count"], 2)
         self.assertGreaterEqual(data["device_count"], 1)
 
+    def test_agent_collaboration_endpoint(self) -> None:
+        response = self.client.get("/demo/agent-collaboration?task_id=8088")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data["task"]["task_id"], "8088")
+        self.assertEqual(data["repos"][1]["name"], "clawscript")
+        self.assertIn("PopupHandler", data["agent_framework"]["strategy_interfaces"])
+
+    def test_agent_collaboration_markdown_endpoint(self) -> None:
+        response = self.client.get("/demo/agent-collaboration.md?task_id=8088")
+        self.assertEqual(response.status_code, 200)
+        body = response.get_data(as_text=True)
+        self.assertIn("# Agent Collaboration Trace", body)
+        self.assertIn("manualscript -> clawscript -> autoscript", body)
+
     def test_job_lifecycle(self) -> None:
         created = self.client.post("/demo/jobs", json={"scenario": "baseline_playback"})
         self.assertEqual(created.status_code, 201)
