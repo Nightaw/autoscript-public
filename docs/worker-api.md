@@ -38,7 +38,7 @@ ok
 
 ### `GET /demo/agent-collaboration`
 
-返回 agent 化改造后的跨仓库协作 trace，展示 `manualscript -> clawscript -> autoscript -> autoscript-public` 的职责分工、任务契约和公开版产物边界。
+返回 agent 化改造后的跨仓库协作 trace，展示 `clawscript-public -> autoscript-public -> autoSampler-public` 的职责分工、任务契约和公开版产物边界。
 
 示例：
 

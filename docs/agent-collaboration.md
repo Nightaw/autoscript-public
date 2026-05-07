@@ -3,7 +3,7 @@
 最近一轮重构把项目从“单仓库脚本集合”进一步拆成了更适合 agent 开发的协作方式。公开版用一个可运行 trace 展示这条链路：
 
 ```text
-manualscript -> clawscript -> autoscript -> autoscript-public
+clawscript-public -> autoscript-public -> autoSampler-public
 ```
 
 这不是把内部仓库原样搬出来，而是保留协作边界、任务契约、运行时抽象和结果样例。
@@ -12,11 +12,11 @@ manualscript -> clawscript -> autoscript -> autoscript-public
 
 | Repo | 角色 | 对下游交付 |
 | --- | --- | --- |
-| `manualscript` | 配置驱动的场景源头，沉淀 app profile、设备约束、场景参数和质量预期 | 任务参数、场景名、时长、滑动间隔、指标口径 |
-| `clawscript` | agent/SOP 层，把自然语言任务转成可执行步骤和安全护栏 | SOP、agent task spec、debug artifact 约定 |
-| `autoscript` | worker、parser、metric、report 层，负责执行和结构化输出 | JSON result、Markdown report、parser summary |
+| `clawscript-public` | agent/SOP 层，把自然语言任务转成可执行步骤和安全护栏 | SOP、agent task spec、debug artifact 约定 |
+| `autoscript-public` | worker、parser、metric、report 层，负责执行和结构化输出 | JSON result、Markdown report、parser summary |
+| `autoSampler-public` | post-capture review 层，负责样本复核、证据拼图和 artifact 发布 | storyboard、review score、artifact manifest、Pages bundle |
 
-`autoscript-public` 负责把这条链路做成脱敏后的展示版本，方便直接运行和阅读。
+`autoscript-public` 负责展示 execution/runtime 这一层如何接住 `clawscript-public` 的任务契约，并把结果交给 `autoSampler-public` 做证据包装。
 
 ## Agent 化以后解决了什么
 
@@ -84,4 +84,4 @@ curl http://127.0.0.1:7777/demo/agent-collaboration.md
 - 二进制产物
 - 公司内部接口和路径
 
-这也是后续把 `clawscript` 单独公开时的衔接点：`clawscript` 负责展示 agent/SOP 生成和执行方式，`autoscript-public` 负责展示结果如何进入 worker、parser 和报告链路。
+这也是三个公开仓库的衔接点：`clawscript-public` 负责展示 agent/SOP 生成和仓库 handoff，`autoscript-public` 负责展示结果如何进入 worker、parser 和报告链路，`autoSampler-public` 负责展示样本复核和证据发布。

@@ -46,22 +46,22 @@ class CollaborationEvent:
 
 REPO_ROLES: tuple[RepoRole, ...] = (
     RepoRole(
-        name="manualscript",
-        public_status="source repo, not published in this demo",
-        responsibility="Keeps config-driven task profiles and repeatable scenario definitions.",
-        handoff="Scenario name, app profile, device constraints, duration, and metric expectations.",
-    ),
-    RepoRole(
-        name="clawscript",
-        public_status="planned companion public repo",
+        name="clawscript-public",
+        public_status="published companion public repo",
         responsibility="Turns a natural-language automation request into an agent-friendly SOP and executable task.",
         handoff="Agent task spec, step guard policy, app entry strategy, debug artifact contract.",
     ),
     RepoRole(
-        name="autoscript",
+        name="autoscript-public",
         public_status="project represented by this public demo",
         responsibility="Runs worker-side execution, parser registration, metric extraction, and report formatting.",
         handoff="Structured JSON result, Markdown report, parser summaries, and lifecycle state.",
+    ),
+    RepoRole(
+        name="autoSampler-public",
+        public_status="published companion public repo",
+        responsibility="Packages post-capture review evidence, storyboards, manifests, and static portfolio artifacts.",
+        handoff="Review score, storyboard images, artifact manifest, and GitHub Pages bundle.",
     ),
 )
 
@@ -111,34 +111,34 @@ def build_collaboration_trace(task_id: str = "8088") -> dict:
     task = SAMPLE_AGENT_TASKS[task_id]
     events = (
         CollaborationEvent(
-            stage="scenario_contract",
-            owner_repo="manualscript",
-            summary="Normalize the target app, duration, swipe cadence, and expected metrics into a stable task contract.",
+            stage="agent_planning",
+            owner_repo="clawscript-public",
+            summary="Normalize the target app family, duration, swipe cadence, validation gates, and downstream repo contracts into an agent task spec.",
             artifact="agent_task_contract.json",
         ),
         CollaborationEvent(
-            stage="agent_planning",
-            owner_repo="clawscript",
+            stage="sop_generation",
+            owner_repo="clawscript-public",
             summary="Convert the natural-language request into an SOP with popup handling, entry strategy, guard rails, and debug capture.",
             artifact="agent_sop.md",
         ),
         CollaborationEvent(
             stage="worker_execution",
-            owner_repo="autoscript",
+            owner_repo="autoscript-public",
             summary="Execute the task through the worker abstraction, collect logs and video artifacts, then run parser modules.",
             artifact=task.output_path,
         ),
         CollaborationEvent(
-            stage="public_projection",
-            owner_repo="autoscript-public",
-            summary="Publish a sanitized, runnable demo that preserves architecture, contracts, parser outputs, and interview-friendly evidence.",
-            artifact="docs/agent-collaboration.md",
+            stage="evidence_packaging",
+            owner_repo="autoSampler-public",
+            summary="Package worker output into review evidence, storyboards, manifests, and portfolio-facing static artifacts.",
+            artifact="docs/agent-handoffs.json",
         ),
     )
 
     return {
         "conversation_id": CONVERSATION_ID,
-        "collaboration": "manualscript -> clawscript -> autoscript -> autoscript-public",
+        "collaboration": "clawscript-public -> autoscript-public -> autoSampler-public",
         "repos": list_repo_roles(),
         "task": task.to_dict(),
         "handoff_contract": {

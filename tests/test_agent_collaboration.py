@@ -18,8 +18,8 @@ class AgentCollaborationTest(unittest.TestCase):
         repo_names = [repo["name"] for repo in trace["repos"]]
 
         self.assertEqual(trace["conversation_id"], "019e0097-c570-7e53-9d0d-b9859dcd2404")
-        self.assertEqual(repo_names, ["manualscript", "clawscript", "autoscript"])
-        self.assertEqual(trace["collaboration"], "manualscript -> clawscript -> autoscript -> autoscript-public")
+        self.assertEqual(repo_names, ["clawscript-public", "autoscript-public", "autoSampler-public"])
+        self.assertEqual(trace["collaboration"], "clawscript-public -> autoscript-public -> autoSampler-public")
 
     def test_task_contract_keeps_agent_runtime_parameters(self) -> None:
         trace = build_collaboration_trace("8088")
@@ -35,7 +35,7 @@ class AgentCollaborationTest(unittest.TestCase):
         markdown = render_collaboration_markdown(build_collaboration_trace("8088"))
 
         self.assertIn("# Agent Collaboration Trace", markdown)
-        self.assertIn("manualscript -> clawscript -> autoscript -> autoscript-public", markdown)
+        self.assertIn("clawscript-public -> autoscript-public -> autoSampler-public", markdown)
         self.assertIn("AgentContext", markdown)
         self.assertIn("Public Projection", markdown)
 

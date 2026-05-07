@@ -61,7 +61,7 @@ class WorkerApiTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
         self.assertEqual(data["task"]["task_id"], "8088")
-        self.assertEqual(data["repos"][1]["name"], "clawscript")
+        self.assertEqual(data["repos"][0]["name"], "clawscript-public")
         self.assertIn("PopupHandler", data["agent_framework"]["strategy_interfaces"])
 
     def test_agent_collaboration_markdown_endpoint(self) -> None:
@@ -69,7 +69,7 @@ class WorkerApiTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         body = response.get_data(as_text=True)
         self.assertIn("# Agent Collaboration Trace", body)
-        self.assertIn("manualscript -> clawscript -> autoscript", body)
+        self.assertIn("clawscript-public -> autoscript-public -> autoSampler-public", body)
 
     def test_job_lifecycle(self) -> None:
         created = self.client.post("/demo/jobs", json={"scenario": "baseline_playback"})

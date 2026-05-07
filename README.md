@@ -9,7 +9,7 @@
 - 日志指标提取：卡顿、超时聚类、分辨率变化
 - worker 形态：设备清单、场景执行、结构化结果输出
 - parser 模块化：按 `stall / resolution`、按 `sys_log / app_log` 拆分入口
-- agent 协作链路：展示 `manualscript -> clawscript -> autoscript` 的任务交接方式
+- agent 协作链路：展示 `clawscript-public -> autoscript-public -> autoSampler-public` 的任务交接方式
 
 ## 我想解决的问题
 
@@ -72,16 +72,16 @@
 最近一轮重构把项目进一步拆成了适合 agent 开发的协作形态：
 
 ```text
-manualscript -> clawscript -> autoscript -> autoscript-public
+clawscript-public -> autoscript-public -> autoSampler-public
 ```
 
 这里新增了一个公开 trace，用来展示三类仓库如何交接：
 
-- `manualscript`：沉淀配置驱动的场景、参数和质量预期
-- `clawscript`：把自然语言任务转成 agent SOP、任务规格和执行护栏
-- `autoscript`：承接 worker 执行、日志解析、指标提取和报告输出
+- [`clawscript-public`](https://github.com/Nightaw/clawscript-public)：把自然语言任务转成 agent SOP、任务规格和执行护栏
+- `autoscript-public`：承接 worker 执行、日志解析、指标提取和报告输出
+- [`autoSampler-public`](https://github.com/Nightaw/autoSampler-public)：承接采样复核、证据拼图、artifact manifest 和 GitHub Pages 展示
 
-`clawscript` 后续会作为配套仓库单独公开；当前仓库先把协作契约、运行时抽象和结果输出展示出来。
+`clawscript-public` 现在作为配套公开入口，当前仓库继续展示 execution/runtime 这一层如何接住 agent task spec 并输出结构化结果。
 
 ## 架构图
 
@@ -102,9 +102,8 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    M["manualscript\nscenario contract"] --> C["clawscript\nagent SOP + task spec"]
-    C --> A["autoscript\nworker + parsers + reports"]
-    A --> P["autoscript-public\nsanitized runnable demo"]
+    C["clawscript-public\nagent SOP + task spec"] --> A["autoscript-public\nworker + parsers + reports"]
+    A --> S["autoSampler-public\nreview evidence + portfolio artifacts"]
 ```
 
 ## 目录结构

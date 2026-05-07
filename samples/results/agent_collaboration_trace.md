@@ -1,28 +1,28 @@
 # Agent Collaboration Trace
 
 - Conversation reference: `019e0097-c570-7e53-9d0d-b9859dcd2404`
-- Collaboration path: `manualscript -> clawscript -> autoscript -> autoscript-public`
+- Collaboration path: `clawscript-public -> autoscript-public -> autoSampler-public`
 - Demo task: `8088` / `short_video.agent_stall.basic`
 
 ## Repo Responsibilities
 
-### manualscript
+### clawscript-public
 
-- Public status: source repo, not published in this demo
-- Responsibility: Keeps config-driven task profiles and repeatable scenario definitions.
-- Handoff: Scenario name, app profile, device constraints, duration, and metric expectations.
-
-### clawscript
-
-- Public status: planned companion public repo
+- Public status: published companion public repo
 - Responsibility: Turns a natural-language automation request into an agent-friendly SOP and executable task.
 - Handoff: Agent task spec, step guard policy, app entry strategy, debug artifact contract.
 
-### autoscript
+### autoscript-public
 
 - Public status: project represented by this public demo
 - Responsibility: Runs worker-side execution, parser registration, metric extraction, and report formatting.
 - Handoff: Structured JSON result, Markdown report, parser summaries, and lifecycle state.
+
+### autoSampler-public
+
+- Public status: published companion public repo
+- Responsibility: Packages post-capture review evidence, storyboards, manifests, and static portfolio artifacts.
+- Handoff: Review score, storyboard images, artifact manifest, and GitHub Pages bundle.
 
 ## Task Contract
 
@@ -41,29 +41,29 @@
 
 ## Execution Trace
 
-### scenario_contract
-
-- Owner repo: `manualscript`
-- Summary: Normalize the target app, duration, swipe cadence, and expected metrics into a stable task contract.
-- Artifact: `agent_task_contract.json`
-
 ### agent_planning
 
-- Owner repo: `clawscript`
+- Owner repo: `clawscript-public`
+- Summary: Normalize the target app family, duration, swipe cadence, validation gates, and downstream repo contracts into an agent task spec.
+- Artifact: `agent_task_contract.json`
+
+### sop_generation
+
+- Owner repo: `clawscript-public`
 - Summary: Convert the natural-language request into an SOP with popup handling, entry strategy, guard rails, and debug capture.
 - Artifact: `agent_sop.md`
 
 ### worker_execution
 
-- Owner repo: `autoscript`
+- Owner repo: `autoscript-public`
 - Summary: Execute the task through the worker abstraction, collect logs and video artifacts, then run parser modules.
 - Artifact: `samples/results/agent_short_video_report.json`
 
-### public_projection
+### evidence_packaging
 
-- Owner repo: `autoscript-public`
-- Summary: Publish a sanitized, runnable demo that preserves architecture, contracts, parser outputs, and interview-friendly evidence.
-- Artifact: `docs/agent-collaboration.md`
+- Owner repo: `autoSampler-public`
+- Summary: Package worker output into review evidence, storyboards, manifests, and portfolio-facing static artifacts.
+- Artifact: `docs/agent-handoffs.json`
 
 ## Public Projection
 
