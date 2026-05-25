@@ -10,6 +10,7 @@
 - worker 形态：设备清单、场景执行、结构化结果输出
 - parser 模块化：按 `stall / resolution`、按 `sys_log / app_log` 拆分入口
 - agent 协作链路：展示 `clawscript-public -> autoscript-public -> autoSampler-public` 的任务交接方式
+- 适配同步：把最近的设备、选择器、手势和播放状态适配抽象成公开可讲的工程变更
 
 ## 我想解决的问题
 
@@ -82,6 +83,17 @@ clawscript-public -> autoscript-public -> autoSampler-public
 - [`autoSampler-public`](https://github.com/Nightaw/autoSampler-public)：承接采样复核、证据拼图、artifact manifest 和 GitHub Pages 展示
 
 `clawscript-public` 现在作为配套公开入口，当前仓库继续展示 execution/runtime 这一层如何接住 agent task spec 并输出结构化结果。
+
+### 8. Recent Adaptation Sync
+
+最近一次同步来自内部 `autoscript@94614e50`。公开版没有搬真实业务脚本，而是把这波适配抽象成四个可展示的工程点：
+
+- 直播入口从文本匹配转向更稳定的资源选择器策略
+- 场景内手势收敛到统一的 swipe adapter
+- 短视频卡顿判断补充 no-audio video 状态，避免滑动前后误判
+- iOS 设备支持拆成 active inventory 和 rollout history，避免设备更新覆盖历史
+
+对应输出在 [`recent_adaptations.json`](./samples/results/recent_adaptations.json) 和 [`recent_adaptations.md`](./samples/results/recent_adaptations.md)。
 
 ## 架构图
 
@@ -178,6 +190,13 @@ python3 tools/show_agent_collaboration.py --format json
 python3 tools/show_agent_collaboration.py --format markdown
 ```
 
+### 查看最近适配同步
+
+```bash
+python3 tools/show_recent_adaptations.py --format json
+python3 tools/show_recent_adaptations.py --format markdown
+```
+
 ## 样例输出
 
 - [baseline_playback_report.json](./samples/results/baseline_playback_report.json)
@@ -189,6 +208,8 @@ python3 tools/show_agent_collaboration.py --format markdown
 - [agent_collaboration_trace.json](./samples/results/agent_collaboration_trace.json)
 - [agent_collaboration_trace.md](./samples/results/agent_collaboration_trace.md)
 - [agent_short_video_report.json](./samples/results/agent_short_video_report.json)
+- [recent_adaptations.json](./samples/results/recent_adaptations.json)
+- [recent_adaptations.md](./samples/results/recent_adaptations.md)
 
 ## 项目两点
 

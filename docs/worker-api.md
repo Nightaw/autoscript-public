@@ -52,6 +52,22 @@ curl http://127.0.0.1:7777/demo/agent-collaboration?task_id=8088
 
 返回 Markdown 形式的 agent 协作说明，适合直接放到文档、PR 或项目展示页里。
 
+### `GET /demo/recent-adaptations`
+
+返回最近一次公开同步的适配摘要，展示选择器、手势、播放状态和设备清单这几类更新如何被抽象成 public-safe 产物。
+
+示例：
+
+```bash
+curl http://127.0.0.1:7777/demo/recent-adaptations
+```
+
+示例返回见 [recent_adaptations.json](../samples/results/recent_adaptations.json)。
+
+### `GET /demo/recent-adaptations.md`
+
+返回 Markdown 形式的适配同步说明，适合展示这次代码库更新背后的工程判断。
+
 ### `POST /demo/run`
 
 触发一次 mock job，返回结构化质量报告。

@@ -71,6 +71,20 @@ class WorkerApiTest(unittest.TestCase):
         self.assertIn("# Agent Collaboration Trace", body)
         self.assertIn("clawscript-public -> autoscript-public -> autoSampler-public", body)
 
+    def test_recent_adaptations_endpoint(self) -> None:
+        response = self.client.get("/demo/recent-adaptations")
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data["source"], "autoscript@94614e50")
+        self.assertEqual(data["summary"]["update_count"], 4)
+
+    def test_recent_adaptations_markdown_endpoint(self) -> None:
+        response = self.client.get("/demo/recent-adaptations.md")
+        self.assertEqual(response.status_code, 200)
+        body = response.get_data(as_text=True)
+        self.assertIn("# Recent Adaptation Sync", body)
+        self.assertIn("Device Rollout Model", body)
+
     def test_job_lifecycle(self) -> None:
         created = self.client.post("/demo/jobs", json={"scenario": "baseline_playback"})
         self.assertEqual(created.status_code, 201)
